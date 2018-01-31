@@ -9,7 +9,19 @@ class Address(models.Model):
     state=models.CharField(max_length=100)
     def __str__(self):
        return self.city+','+self.state+','+self.address_one
+class Guardian(models.Model):
+    first_name=models.CharField(max_length=100,blank=True)
+    middle_name=models.CharField(max_length=100,blank=True)
+    last_name=models.CharField(max_length=100,blank=True)
+    phone_no=models.CharField(max_length=100,blank=True)
+    address=models.ForeignKey(Address,on_delete=models.CASCADE,default='')
+    def __str__(self):
+         return self.first_name+' '+self.middle_name+' '+self.last_name
 
+class StudentGroup(models.Model):
+    group_name=models.CharField(max_length=100)
+    def __str__(self):
+        return self.group_name
 
 class Student(models.Model):
     MALE='M'
@@ -49,6 +61,8 @@ class Student(models.Model):
     blood_group=models.CharField(max_length=2,choices=BLOOD_GROUP,default=UNKNOWN)
     joining_date=models.DateTimeField(default=timezone.now)
     address=models.ForeignKey(Address,on_delete=models.CASCADE,default='')
+    guardian=models.ForeignKey(Guardian,on_delete=models.CASCADE,default='')
+    student_group=models.ForeignKey(StudentGroup,on_delete=models.CASCADE,default='')
     def __str__(self):
         return self.first_name+' '+self.middle_name+' '+self.last_name
 
@@ -65,11 +79,3 @@ class Teacher(models.Model):
 
 
 
-class Guardian(models.Model):
-    first_name=models.CharField(max_length=100,blank=True)
-    middle_name=models.CharField(max_length=100,blank=True)
-    last_name=models.CharField(max_length=100,blank=True)
-    phone_no=models.CharField(max_length=100,blank=True)
-    address=models.ForeignKey(Address,on_delete=models.CASCADE,default='')
-    def __str__(self):
-         return self.first_name+' '+self.middle_name+' '+self.last_name
