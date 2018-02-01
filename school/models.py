@@ -9,10 +9,13 @@ class Address(models.Model):
     state=models.CharField(max_length=100)
     def __str__(self):
        return self.city+','+self.state+','+self.address_one
+class Course(models.Model):
+    course_name=models.CharField(max_length=100)
+
 class Guardian(models.Model):
     first_name=models.CharField(max_length=100,blank=True)
     middle_name=models.CharField(max_length=100,blank=True)
-    last_name=models.CharField(max_length=100,blank=True)
+    last_name=models.CharField(max_length=100,blank=True)    
     phone_no=models.CharField(max_length=100,blank=True)
     address=models.ForeignKey(Address,on_delete=models.CASCADE,default='')
     def __str__(self):
@@ -20,6 +23,7 @@ class Guardian(models.Model):
 
 class StudentGroup(models.Model):
     group_name=models.CharField(max_length=100)
+    course=models.ForeignKey(Course,on_delete=models.CASCADE,default='')
     def __str__(self):
         return self.group_name
 
