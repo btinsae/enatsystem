@@ -13,19 +13,23 @@ class Course(models.Model):
     course_name=models.CharField(max_length=100)
 
 class Guardian(models.Model):
-    first_name=models.CharField(max_length=100,blank=True)
-    middle_name=models.CharField(max_length=100,blank=True)
-    last_name=models.CharField(max_length=100,blank=True)    
+    full_name=models.CharField(max_length=20)  
     phone_no=models.CharField(max_length=100,blank=True)
     address=models.ForeignKey(Address,on_delete=models.CASCADE,default='')
     def __str__(self):
-         return self.first_name+' '+self.middle_name+' '+self.last_name
+         return self.full_name
 
 class StudentGroup(models.Model):
     group_name=models.CharField(max_length=100)
     course=models.ForeignKey(Course,on_delete=models.CASCADE,default='')
     def __str__(self):
         return self.group_name
+class Assesment(models.Model):
+    """Assesment class"""
+    assesment_type=models.CharField(max_length=50)
+    assesment_amount=models.DecimalField(max_digits=5, decimal_places=2)
+    def __str__(self):
+        return self.assesment_type
 
 class Student(models.Model):
     MALE='M'
@@ -55,9 +59,7 @@ class Student(models.Model):
         (BPLUS, 'B+'),
         (UNKNOWN, '')
     )
-    first_name=models.CharField(max_length=20)
-    middle_name=models.CharField(max_length=20)
-    last_name=models.CharField(max_length=20)
+    full_name=models.CharField(max_length=20)
     phone_no=models.CharField(max_length=15,null=True)
     email=models.EmailField(max_length=30,null=True)
     gender=models.CharField(max_length=2,choices=GENDER,default=BLANK)
@@ -67,19 +69,45 @@ class Student(models.Model):
     address=models.ForeignKey(Address,on_delete=models.CASCADE,default='')
     guardian=models.ForeignKey(Guardian,on_delete=models.CASCADE,default='')
     student_group=models.ForeignKey(StudentGroup,on_delete=models.CASCADE,default='')
+    assesments=models.ManyToManyField(Assesment,through='StudentAssesment')
     def __str__(self):
-        return self.first_name+' '+self.middle_name+' '+self.last_name
+        return self.full_name
 
 class Teacher(models.Model):
 
-    first_name=models.CharField(max_length=20)
-    middle_name=models.CharField(max_length=20)
-    last_name=models.CharField(max_length=20)
+    
+    full_name=models.CharField(max_length=20)
     phone_no=models.CharField(max_length=15,null=True)
     email=models.EmailField(max_length=30,null=True)
 
     def __str__(self):
-        return self.first_name+' '+self.middle_name+' '+self.last_name
+        return self.full_name
 
 
 
+    #course=models.ForeignKey(Course,on_delete=models.CASCADE,default='')
+class StudentAssesment(models.Model):
+    student=models.ForeignKey(Student,on_delete=models.CASCADE)
+    assesment=models.ForeignKey(Assesment,on_delete=models.CASCADE)
+    assesment_date=models.DateTimeField(auto_now_add=True)
+    result=models.DecimalField(max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        return self.student.full_name +" "+self.assesment.assesment_type
+
+class Attendance(models.Model):
+    attend=models.BooleanField(default=False)
+    date=models.DateField()
+    student=models.ForeignKey(Student,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.student.full_name + ' '+str(self.date)
+class Fee(models.Model):
+    for_month=models.DateField()
+    student=models.OneToOneField(Student,on_delete=models.CASCADE)
+    amount=models.DecimalField(max_digits=5, decimal_places=2)
+    paid_on=models.DateTimeField(auto_now_add=True)
+    is_paid=models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.student.full_name+' '+str(self.for_month)

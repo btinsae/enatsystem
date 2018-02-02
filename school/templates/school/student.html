@@ -1,0 +1,33 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Full name</th>           
+            <th>Sex</th>
+            <!-- <th>Joining Date</th> -->
+            <th>Class</th>
+            <th>Guardian</th>
+            <th>Address</th>
+            
+            
+        </tr>        
+    </thead>
+    <tbody>
+    {% for student in context.students %}
+        <tr>
+            <td>1</td>
+            <td>{{student.full_name }}</td>
+            <td>{{student.gender}}</td>
+            <!-- <td>{{student.joining_date}}</td> -->
+            <td>{{student.student_group}}</td>
+            <td><a href="{{student.guardian.id}}">Guardian</a></td>
+            <td><Address>{{student.address}}</Address></td>
+            
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
